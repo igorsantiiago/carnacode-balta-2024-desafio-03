@@ -4,6 +4,7 @@
 O CarnaCode foi um evento online e gratuito que aconteceu nos dias 10, 11, 12 e 13 de Fevereiro de 2024, fornecido pela plataforma [Balta.io](https://balta.io/), onde foi codificado uma aplicação Web (Blazor + PWA) completa, do começo ao fim.
 
 
+Link do [Projeto na Vercel](https://carnacode-balta-2024-desafio-03.vercel.app/)
 
 ## 🗒️ Sobre o Desafio
 No ***primeiro dia do desafio***, foram desenvolvidas a parte de HTML e CSS da aplicação, utilizando como base o Figma fornecido pelo professor.
@@ -21,7 +22,7 @@ E no ***terceiro e último dia do desafio***, foi adicionado suporte a PWA e pub
 * PWA
 * Git
 * GitHub
-* GitHub Pages
+* Vercel
 
 ### 🛠️ Ferramentas Utilizadas
 * Visual Studio Code

@@ -1,0 +1,90 @@
+﻿@page "/resultado/historico"
+@using System.Linq
+@using System.Text.Json
+@using Imc.ValueObjects
+@inject IJSRuntime JSRuntime
+@inject NavigationManager _navigationManager
+
+<div class="container">
+    <div class="logo-background">
+        <div class="logo">
+        </div>
+    </div>
+
+    <div class="form">
+        <h2>Histórico</h2>
+
+        <input class="form-input" type="text" placeholder="Pesquisar...">
+    </div>
+
+    <div class="history-result">
+        @if (_savedResults != null && _savedResults.Any())
+        {
+            @foreach (var result in _savedResults)
+            {
+
+                <div class="history-result-header">
+                    <h2>@result.Status</h2>
+                    <p>@result.DateDescription</p>
+                </div>
+                <div class="history-result-content">
+                    <p>@result.Message</p>
+                </div>
+                <span class="line"></span>
+            }
+        }
+        else
+        {
+            <p>Não há resultados de IMC armazenados.</p>
+        }
+
+        <div class="btn-group">
+            <button class="btn btn-primary" @onclick="ImcCalculator">Calcular meu IMC</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<ImcResult>? _savedResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string imcResultsJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "imcResults");
+        if (!string.IsNullOrWhiteSpace(imcResultsJson))
+        {
+            List<ImcResult>? imcResults = JsonSerializer.Deserialize<List<ImcResult>>(imcResultsJson);
+
+            _savedResults = imcResults?.Select((result) =>
+            {
+                result.DateDescription = GetDateDescription(result.CalculationDate);
+                return result;
+            }).ToList();
+        }
+        else
+        {
+            _savedResults = new List<ImcResult>();
+        }
+    }
+
+    private string GetDateDescription(DateTime calculationDate)
+    {
+        TimeSpan difference = DateTime.Now.Date - calculationDate.Date;
+        if (difference.Days == 0)
+        {
+            return "Hoje";
+        }
+        else if (difference.Days == 1)
+        {
+            return "Ontem";
+        }
+        else
+        {
+            return $"{difference.Days} dias atrás.";
+        }
+    }
+
+    private void ImcCalculator()
+    {
+        _navigationManager.NavigateTo("/imc");
+    }
+}

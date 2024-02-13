@@ -1,0 +1,133 @@
+@page "/imc"
+@using System.Text.Json
+@using Imc.ValueObjects
+@inject NavigationManager _navigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="container">
+    <div class="logo-background">
+        <div class="logo">
+        </div>
+    </div>
+
+    <EditForm Model="_modelImc" OnValidSubmit="@HandleSubmitAsync">
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form">
+            <h2>Cálculo de IMC</h2>
+
+            <label for="Altura" class="form-label"></label>
+            <InputNumber class="form-input" placeholder="Altura" type="text" id="Altura"
+                @bind-Value="_modelImc.Altura" />
+
+            <label for="Peso" class="form-label"></label>
+            <InputNumber class="form-input" placeholder="Peso" type="text" id="Peso" @bind-Value="_modelImc.Peso" />
+
+            <label for="Sexo" class="form-label"></label>
+            <InputText class="form-input" type="text" id="Sexo" @bind-Value="_modelImc.Sexo" placeholder="Sexo" />
+
+            <div class="checkbox">
+                <input class="checkbox-style" id="checkbox-age" type="checkbox">
+                <label for="checkbox-age">Eu tenho 65 anos ou mais</label>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary">Calcular meu IMC</button>
+            </div>
+        </div>
+    </EditForm>
+    <div class="btn-group">
+        <button class="btn">Entenda o cálculo</button>
+    </div>
+
+</div>
+
+@code {
+    UserData _modelImc = new();
+    decimal? imcModel = 0;
+    List<ImcResult>? _imcResults;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string imcResultsJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "imcResults");
+        if (!string.IsNullOrWhiteSpace(imcResultsJson))
+        {
+            _imcResults = JsonSerializer.Deserialize<List<ImcResult>>(imcResultsJson);
+        }
+        else
+        {
+            _imcResults = new List<ImcResult>();
+        }
+    }
+
+    async Task HandleSubmitAsync()
+    {
+        try
+        {
+            var imc = CalculateImc(_modelImc.Altura, _modelImc.Peso);
+            if (imc != null)
+            {
+                imcModel = imc;
+                var imcResult = new ImcResult
+                    {
+                        Status = GetStatus(imc),
+                        Message = GetMessage(imc),
+                        CalculationDate = DateTime.UtcNow
+                    };
+
+                _imcResults?.Add(imcResult);
+
+                string imcResultsJson = JsonSerializer.Serialize(_imcResults);
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "imcResults", imcResultsJson);
+            }
+
+            if (imcModel >= 25)
+                _navigationManager.NavigateTo("/resultado/sobrepeso");
+
+            if (imcModel >= 18 && imcModel < 25)
+                _navigationManager.NavigateTo("/resultado/ideal");
+
+            if (imcModel < 18)
+                _navigationManager.NavigateTo("/resultado/abaixo");
+        }
+        catch
+        {
+            // Handle exceptions
+        }
+    }
+
+    private decimal? CalculateImc(decimal? altura, decimal? peso)
+    {
+        var imc = (peso / (altura * altura));
+        return imc;
+    }
+
+    private string GetStatus(decimal? imc)
+    {
+        if (imc.HasValue)
+        {
+            if (imc >= 25)
+                return "Sobrepeso ⛔";
+            else if (imc >= 18 && imc < 25)
+                return "Peso Ideal ✅";
+            else
+                return "Abaixo do Peso Ideal ⚠️";
+        }
+        return "N/A";
+    }
+
+    private string GetMessage(decimal? imc)
+    {
+        if (imc.HasValue)
+        {
+            if (imc >= 25)
+                return "Estamos quase lá! Faça alguns ajustes para ficar no peso ideal!";
+            else if (imc >= 18 && imc < 25)
+                return "Parabéns, você está no seu peso ideal, continue mantendo este estilo!";
+            else
+                return "Você está abaixo do peso ideal. Consulte um profissional para orientações.";
+        }
+        return "N/A";
+    }
+}

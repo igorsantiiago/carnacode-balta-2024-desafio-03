@@ -1,0 +1,19 @@
+.splash-container {
+    text-align: center;
+}
+
+.splash-border {
+    display: flex;
+    justify-content: center;
+    width: 180px;
+    height: 180px;
+    background-color: white;
+    padding: 40px;
+    border: 8px solid #45FEFE;
+    border-radius: 45px;
+}
+
+.splash-image {
+    border-radius: 40px;
+    width: 100%;
+}

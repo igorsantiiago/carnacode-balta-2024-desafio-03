@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #2E1462;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Inter";
+}
+
+/* ESTRUTURA DO CORPO */
+.container {
+    background-color: #FFF;
+    border-radius: 10px;
+    max-width: 90vw;
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.logo-background {
+    margin-top: -30px;
+    background-color: #FFF;
+    border: 4px solid #45FEFE;
+    border-radius: 20px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    background-image: url(../assets/icon-no-bg.png);
+    background-size: cover;
+}
+
+
+/* FORMULÁRIO */
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+}
+
+.form h2 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.form p {
+    font-size: 1rem;
+    font-weight: 300;
+    align-self: center;
+}
+
+.form-input {
+    background-color: #F6F6F6;
+    border: 1px solid #BDBDBD;
+    width: 85vw;
+    height: 50px;
+    border-radius: 20px;
+    margin: 1rem 0;
+    padding: 0.5rem;
+}
+
+.form-input::placeholder {
+    color: #BDBDBD;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* ESTILO PRINCIPAL DO CHECKBOX */
+.checkbox {
+    display: flex;
+    margin: 1.5rem 0.5rem 0.75rem;
+}
+
+.checkbox-style {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* ESTILOS DO BOTÃO */
+.btn-group {
+    margin-top: 1rem;
+}
+
+.btn {
+    width: 80vw;
+    height: 51px;
+    margin-bottom: 10px;
+    border: 4px solid #45FEFE;
+    background-color: #FFF;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #45FEFE;
+}

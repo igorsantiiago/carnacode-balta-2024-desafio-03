@@ -1,0 +1,29 @@
+.history-result {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    padding: 0px 30px;
+}
+
+.history-result-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.history-result-header h2 {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.history-result-header p,
+.history-result-content p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.line {
+    border-top: 1px solid black;
+    opacity: .2;
+    margin: 20px;
+}

@@ -1,0 +1,36 @@
+﻿@page "/resultado/abaixo"
+@inject NavigationManager _navigationManager
+
+<PageTitle>Resultado - Sobrepeso</PageTitle>
+
+<body>
+    <div class="container">
+        <div class="logo-background">
+            <div class="logo">
+            </div>
+        </div>
+
+        <div class="result-page">
+            <h2>⚠️ Abaixo do peso!</h2>
+            <p>Você está abaixo do peso ideal, tenha uma atenção maior a sua saúde!</p>
+
+                <button class="btn btn-primary" @onclick="ImcCalculator">Registrar medidas</button>
+                <button class="btn" @onclick="HistoryResult">Ver meu histórico</button>
+        </div>
+    </div>
+</body>
+
+@code {
+    private void ImcCalculator()
+    {
+        _navigationManager.NavigateTo("/imc");
+    }
+
+    private void HistoryResult()
+    {
+        _navigationManager.NavigateTo("/resultado/historico");
+    }
+}
+
+
+

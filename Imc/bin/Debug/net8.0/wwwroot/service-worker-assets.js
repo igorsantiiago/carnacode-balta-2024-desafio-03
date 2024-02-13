@@ -473,7 +473,7 @@
       "url": "icons\/windows\/Wide310x150Logo.scale-400.png"
     },
     {
-      "hash": "sha256-iRUcoqdmc0ly4K+OW\/UPAf13gpHvJd4gJD8fxX0DDlY=",
+      "hash": "sha256-iid5Yqq7Sd5oDAkIrsIk+GBpdumcMzNyy2l2nEYkIao=",
       "url": "index.html"
     },
     {
@@ -1289,17 +1289,17 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-aTlBXXtf5Rg1LZp6KhlH4FzG93qIN8JK7cttMlrKgLY=",
+      "hash": "sha256-5nHBXDneY+GpYxAdII6lqSnStf1LElocKkyCEsg80xg=",
       "url": "_framework\/Imc.wasm"
     },
     {
-      "hash": "sha256-QzTYpLAVKNpBKfE6W0l7yJh\/X7UHuY+hqpp5fIw2yJ8=",
+      "hash": "sha256-qujwFL0PiSF6Sos9yrPtDPH5ENcnS4z3k\/soRBC28hc=",
       "url": "_framework\/Imc.pdb"
     },
     {
-      "hash": "sha256-dCs3MGm4F2p+sl10j64vcbrVo83zJZfhnGlSw0T\/ccQ=",
+      "hash": "sha256-QdAEmLz2e9hkoLSYl\/akqbQScc2rHNylfBngiyopNqU=",
       "url": "_framework\/blazor.boot.json"
     }
   ],
-  "version": "2yQTQEH7"
+  "version": "xyCso2OM"
 };

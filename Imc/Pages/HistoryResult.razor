@@ -1,7 +1,4 @@
 ﻿@page "/resultado/historico"
-@using System.Linq
-@using System.Text.Json
-@using Imc.ValueObjects
 @inject IJSRuntime JSRuntime
 @inject NavigationManager _navigationManager
 
@@ -25,7 +22,7 @@
 
                 <div class="history-result-header">
                     <h2>@result.Status</h2>
-                    <p>@result.DateDescription</p>
+                    <p>@result.TimeAgoMessage</p>
                 </div>
                 <div class="history-result-content">
                     <p>@result.Message</p>
@@ -56,7 +53,7 @@
 
             _savedResults = imcResults?.Select((result) =>
             {
-                result.DateDescription = GetDateDescription(result.CalculationDate);
+                result.TimeAgoMessage = GetTimeAgoMessage(result.CalculationDate);
                 return result;
             }).ToList();
         }
@@ -66,21 +63,18 @@
         }
     }
 
-    private string GetDateDescription(DateTime calculationDate)
+    private static string GetTimeAgoMessage(DateTime calculationDate)
     {
-        TimeSpan difference = DateTime.Now.Date - calculationDate.Date;
-        if (difference.Days == 0)
-        {
-            return "Hoje";
-        }
-        else if (difference.Days == 1)
-        {
-            return "Ontem";
-        }
+        TimeSpan timeSinceCalculation = DateTime.UtcNow - calculationDate;
+
+        if (timeSinceCalculation.TotalMinutes < 1)
+            return "Calculado agora mesmo";
+        else if (timeSinceCalculation.TotalMinutes < 60)
+            return $"{(int)timeSinceCalculation.TotalMinutes} minutos atrás";
+        else if (timeSinceCalculation.TotalHours < 24)
+            return $"{(int)timeSinceCalculation.TotalHours} horas atrás";
         else
-        {
-            return $"{difference.Days} dias atrás.";
-        }
+            return $"{(int)timeSinceCalculation.TotalDays} dias atrás";
     }
 
     private void ImcCalculator()

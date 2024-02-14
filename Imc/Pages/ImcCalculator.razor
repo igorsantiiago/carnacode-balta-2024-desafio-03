@@ -1,6 +1,4 @@
 @page "/imc"
-@using System.Text.Json
-@using Imc.ValueObjects
 @inject NavigationManager _navigationManager
 @inject IJSRuntime JSRuntime
 
@@ -18,14 +16,16 @@
             <h2>Cálculo de IMC</h2>
 
             <label for="Altura" class="form-label"></label>
-            <InputNumber class="form-input" placeholder="Altura" type="text" id="Altura"
-                @bind-Value="_modelImc.Altura" />
+            <InputNumber class="form-input" placeholder="Altura em cm" type="text" id="Altura"
+                @bind-Value="_modelImc.Height" />
+
+            <ValidationMessage For="@(() => _modelImc.Height)" />
 
             <label for="Peso" class="form-label"></label>
-            <InputNumber class="form-input" placeholder="Peso" type="text" id="Peso" @bind-Value="_modelImc.Peso" />
+            <InputNumber class="form-input" placeholder="Peso" type="text" id="Peso" @bind-Value="_modelImc.Weight" />
 
             <label for="Sexo" class="form-label"></label>
-            <InputText class="form-input" type="text" id="Sexo" @bind-Value="_modelImc.Sexo" placeholder="Sexo" />
+            <InputText class="form-input" type="text" id="Sexo" @bind-Value="_modelImc.Gender" placeholder="Sexo" />
 
             <div class="checkbox">
                 <input class="checkbox-style" id="checkbox-age" type="checkbox">
@@ -37,9 +37,6 @@
             </div>
         </div>
     </EditForm>
-    <div class="btn-group">
-        <button class="btn">Entenda o cálculo</button>
-    </div>
 
 </div>
 
@@ -51,83 +48,47 @@
     protected override async Task OnInitializedAsync()
     {
         string imcResultsJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "imcResults");
+
         if (!string.IsNullOrWhiteSpace(imcResultsJson))
-        {
             _imcResults = JsonSerializer.Deserialize<List<ImcResult>>(imcResultsJson);
-        }
         else
-        {
             _imcResults = new List<ImcResult>();
-        }
     }
 
     async Task HandleSubmitAsync()
     {
         try
         {
-            var imc = CalculateImc(_modelImc.Altura, _modelImc.Peso);
-            if (imc != null)
+            if (!_modelImc.ValidateHeight())
             {
-                imcModel = imc;
-                var imcResult = new ImcResult
-                    {
-                        Status = GetStatus(imc),
-                        Message = GetMessage(imc),
-                        CalculationDate = DateTime.UtcNow
-                    };
+                await JSRuntime.InvokeVoidAsync("alert", "Valor inválido! Certifique-se de que a altura está correta.");
+                return;
+            }
 
-                _imcResults?.Add(imcResult);
+            var imc = _modelImc.CalculateImc();
+            if (imc.HasValue)
+            {
+                var imcResult = ImcResult.FromImc(imc);
+
+                _imcResults ??= new List<ImcResult>();
+                _imcResults.Add(imcResult);
 
                 string imcResultsJson = JsonSerializer.Serialize(_imcResults);
                 await JSRuntime.InvokeVoidAsync("localStorage.setItem", "imcResults", imcResultsJson);
             }
 
-            if (imcModel >= 25)
+            if (imc >= 25)
                 _navigationManager.NavigateTo("/resultado/sobrepeso");
 
-            if (imcModel >= 18 && imcModel < 25)
+            if (imc >= 18 && imc < 25)
                 _navigationManager.NavigateTo("/resultado/ideal");
 
-            if (imcModel < 18)
+            if (imc < 18)
                 _navigationManager.NavigateTo("/resultado/abaixo");
         }
         catch
         {
             // Handle exceptions
         }
-    }
-
-    private decimal? CalculateImc(decimal? altura, decimal? peso)
-    {
-        var imc = (peso / (altura * altura));
-        return imc;
-    }
-
-    private string GetStatus(decimal? imc)
-    {
-        if (imc.HasValue)
-        {
-            if (imc >= 25)
-                return "Sobrepeso ⛔";
-            else if (imc >= 18 && imc < 25)
-                return "Peso Ideal ✅";
-            else
-                return "Abaixo do Peso Ideal ⚠️";
-        }
-        return "N/A";
-    }
-
-    private string GetMessage(decimal? imc)
-    {
-        if (imc.HasValue)
-        {
-            if (imc >= 25)
-                return "Estamos quase lá! Faça alguns ajustes para ficar no peso ideal!";
-            else if (imc >= 18 && imc < 25)
-                return "Parabéns, você está no seu peso ideal, continue mantendo este estilo!";
-            else
-                return "Você está abaixo do peso ideal. Consulte um profissional para orientações.";
-        }
-        return "N/A";
     }
 }
